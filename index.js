@@ -29,6 +29,7 @@ const posts = [
   },
 ];
 
+
 window.onload = function () {
   const main = document.querySelector("main");
   let content = "";
@@ -39,43 +40,65 @@ window.onload = function () {
         posts[i].post,
         posts[i].likes,
         posts[i].username,
-        posts[i].comment
+        posts[i].comment,
+        i
       );
     }
   }
-  console.log(content);
+  //console.log(content);
+  
   main.innerHTML += content;
 };
 
-function fixValues(avatar, post, likes, username, comment) {
+function toggleLike(heartIcon) {
+  const isLiked = heartIcon.getAttribute("data-liked") === "true";
+  const count = heartIcon.getAttribute("data-count");
+  const likesElement = document.getElementById(`likes-${count}`);
+
+  let currentLikes = parseInt(likesElement.textContent); // "21 likes" -> 21
+
+  if (isLiked) {
+    // Unlike
+    heartIcon.setAttribute("data-liked", "false");
+    heartIcon.src = "images/icon-heart.png";
+    currentLikes -= 1;
+  } else {
+    // Like
+    heartIcon.setAttribute("data-liked", "true");
+    heartIcon.src = "images/icon-heart-filled.jpg";
+    currentLikes += 1;
+  }
+
+  likesElement.textContent = `${currentLikes} likes`;
+}
+
+
+
+
+function fixValues(avatar, post, likes, username, comment, count) {
   return `<header>
         <div class="container space-between">
-            <img  id="logo" class="logo" src="images/logo.png" alt="instagram logo">
-            <img id="avatar" class="icon" src="${avatar}" alt="vincent van gogogh's headhot">
+            <img id="logo" class="logo" src="images/logo.png" alt="instagram logo">
+            <img id="avatar" class="icon" src="${avatar}" alt="User avatar">
         </div>
-
     </header>
     <section>
         <div class="container">
-            <img id="post" class="potrait" src="${post}" alt="ahaic image of van gogh lookig stern" />
-
+            <img id="post" class="potrait" src="${post}" alt="Post image" />
         </div>
-
     </section>
     <footer>
         <div class="container">
             <div class="footer-images">
-                <img src="images/icon-heart.png" alt="icon of love for like" />
-                <img src="images/icon-comment.png" alt="icon of love for like" />
-                <img src="images/icon-dm.png" alt="icon of love for like" />
+                <img onclick="toggleLike(this)" data-liked="false" data-count="${count}" src="images/icon-heart.png" alt="icon of love for like" />
+                <img src="images/icon-comment.png" alt="comment icon" />
+                <img src="images/icon-dm.png" alt="dm icon" />
             </div>
             <div class="footer-para">
-                <p id="likes" class="bold">${likes}likes</p>
-                <p><span id="username" class="bold">${username}</span><span id="comment">${comment}</span></p>
+                <p id="likes-${count}" class="bold">${likes} likes</p>
+                <p><span class="bold">${username}</span><span>${comment}</span></p>
             </div>
-         <div class="gap"></div>
+            <div class="gap"></div>
         </div>
-
-    </footer>
-    `;
+    </footer>`;
 }
